@@ -1,76 +1,79 @@
 # youwrite
 
-**An agent skill that refuses to write your code for you.**
+An agent skill that teaches while it builds. Instead of returning a finished script, it
+breaks the task into small steps, explains each one, and leaves the key line for you to
+write.
 
-AI coding assistants are optimized for speed, and most of the time that is the right
-call. But some code you plan to live with — a method you will build on for years, a
-pipeline your group has to maintain, a technique you want in your own hands. For that
-code, a generated script is not the goal. Understanding is.
+Works with Claude Code, Codex CLI, Antigravity, and other agents that read `SKILL.md`.
 
-`youwrite` is a skill for those moments. Give it a task and it will not hand you the
-finished script. It breaks the work into small chunks, explains the concept behind each
-one, writes the scaffolding, and leaves the line that carries the idea to you:
+## How it works
 
-```python
-# TODO(you): convert IC50 in nM to pIC50
-df["pIC50"] = ...
-```
-
-Then it stops and waits. Before anything runs, it asks what you think the output will
-be — being wrong there is where things actually stick.
-
-## What makes it different from "explain this code"
-
-**It reviews code that already works.** A correct line can still get flagged: *"your
-results file has no identifier column — these values cannot be traced back to a
-compound."* Working and good are different things, and the gap between them is
-judgment, which is the hardest part to absorb from generated code. It names at most two
-issues and leaves the rewrite to you.
-
-**It keeps an honest ledger.** Anything the agent generates without teaching goes into a
-`## Not yours yet` list in `LEARNING.md`, and any line of it can be converted into a
-lesson later. Unowned code is never invisible.
-
-**It remembers across sessions.** `LEARNING.md` logs what you got wrong, not just what
-was covered, and the next session opens with a recall question about it.
-
-**It has an escape hatch.** Say "just do it" or "skip the teaching" and the skill drops
-for that request, no argument. Teaching resumes at the next `/youwrite`.
-
-## The one rule
-
-> Never hand over a line the user could have written themselves.
-
-Everything else in the skill serves that. The help level dials how much is *given*
-(`demo` → `guide` → `nudge`), but never the mechanic: you write the marker yourself, you
-predict output before running, one chunk per turn — at every level.
-
-## Install
-
-Claude Code, user-wide:
-
-```bash
-git clone https://github.com/GattiMh/youwrite-skill.git ~/.claude/skills/youwrite
-```
-
-Then invoke it with `/youwrite` followed by what you want to build:
+Invoke it with a task:
 
 ```
 /youwrite fetch IC50s for CDK2 from ChEMBL, convert to pIC50, plot the distribution
 ```
 
-Project-scoped instead? Clone into `.claude/skills/youwrite` inside the repo.
+**1. It maps the task.** You get a numbered list of chunks before any code is written.
+Each chunk is one new concept and something runnable at the end of it. You can reorder or
+cut them before starting.
 
-## Other agents
+**2. Then one chunk at a time:**
 
-The skill is a single markdown file with no vendor-specific code, no API calls, and no
-tool definitions. All of its state lives in your project (`LEARNING.md`, `TODO(you)`
-markers in your source), not in any agent's proprietary memory — so it ports.
+- The concept is explained in plain English, before any code exists.
+- The scaffolding is written — imports, function signature, the call site — with the
+  instructive line left as a marker:
 
-`SKILL.md` is an open standard, and most agents now read it natively — no conversion, no
-adapter, same file. Drop this folder into the right directory:
+  ```python
+  # TODO(you): convert IC50 in nM to pIC50
+  df["pIC50"] = ...
+  ```
 
-| Agent | Global path | Verified |
+- You write the marker. It will not fill it in unless you ask or you have attempted it
+  three times.
+- Before running, it asks what you expect the output to be.
+- It runs the code and shows real output.
+- It reviews what you wrote — including code that works, for naming, redundancy, and
+  whether the output is actually usable. At most two comments, and it does not rewrite
+  them for you.
+- It stops and waits for you to continue.
+
+## Help levels
+
+Three levels control how much is given away. Switch at any time in plain words
+("show me an example first", "just nudge me").
+
+| Level | What you get |
+|---|---|
+| `demo` | The same move worked on different data first, then you repeat it. Concept gets an analogy. |
+| `guide` | Concept in a few sentences, scaffolding, and what the marker must do. **Default.** |
+| `nudge` | The marker and one line naming what it must do. You look the rest up. |
+
+The level adjusts automatically if you stop needing hints, or if you need full hints
+twice in a row. It never changes the mechanic: you write the marker, you predict output,
+one chunk per turn, at every level.
+
+## Skipping it
+
+Say "just do it", "skip the teaching", or "go fast" and the skill drops for that
+request and builds normally. It resumes at the next `/youwrite`.
+
+## LEARNING.md
+
+The skill keeps a `LEARNING.md` in your project root recording what each session covered,
+what you got wrong, and any code that was generated without being taught (under
+`## Not yours yet`). At the start of a session it reads the file and opens with a recall
+question from previous material.
+
+## Install
+
+Clone into your agent's skills directory:
+
+```bash
+git clone https://github.com/GattiMh/youwrite-skill.git ~/.claude/skills/youwrite
+```
+
+| Agent | Path | Verified |
 |---|---|---|
 | Claude Code | `~/.claude/skills/youwrite/` | yes |
 | OpenAI Codex CLI | `~/.codex/skills/youwrite/` | yes |
@@ -79,38 +82,28 @@ adapter, same file. Drop this folder into the right directory:
 | Gemini CLI | `~/.gemini/skills/youwrite/` | reported |
 | Cline | `~/.cline/skills/youwrite/` | reported |
 
-The three marked *verified* were installed and confirmed discovered — the agent lists
-`youwrite` among its available skills. The rest are from published documentation and
-untested here. Project-scoped installs generally work too, most commonly under
-`.agents/skills/`.
+Rows marked *verified* were installed and confirmed — the agent lists `youwrite` among
+its available skills. The rest come from published documentation and are untested here.
+Project-scoped installs generally work too, most commonly under `.agents/skills/`.
 
-For the long tail of other agents, the Vercel installer handles placement:
+For other agents:
 
 ```bash
 npx skills add GattiMh/youwrite-skill
 ```
 
-This skill uses only `name` and `description` in its frontmatter — no `allowed-tools`,
-no vendor-specific fields — which is what keeps it portable. Optional fields are where
-cross-agent support actually fragments.
+## Notes
 
-Two behavioral caveats. The stop-and-wait discipline runs against every coding agent's
-bias toward finishing the task, and agentic IDEs are the most likely to "helpfully" fill
-in your `TODO(you)` — you may need to make the hard-stops section more emphatic for some
-agents. And auto-activation from the `description` field is strongest in Claude Code;
-elsewhere you may get explicit `/youwrite` invocation only, which is arguably better for
-a mode this different from normal operation.
+The skill is a single markdown file using only `name` and `description` frontmatter, with
+no vendor-specific fields. Its state lives in your project — `LEARNING.md` and `TODO(you)`
+markers in your source — rather than in any agent's memory.
 
-## The trade-off
+Two things vary by agent. Some are more likely than others to fill in a `TODO(you)`
+rather than wait, since it runs against their default behavior. And automatic activation
+from the `description` field is most reliable in Claude Code; elsewhere you may need to
+invoke `/youwrite` explicitly.
 
-This is slower than letting the agent write everything. Deliberately. It is not for
-every task — it is for the code you want to still understand in six months.
-
-## Colophon
-
-The skill file was drafted with Claude and refined in use. Which is either ironic or
-exactly the point, depending on how you look at it — the thing it protects against is
-not *using* AI, it is ending up with code you never understood.
+The skill file was drafted with Claude.
 
 ## License
 
