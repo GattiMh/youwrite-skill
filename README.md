@@ -67,19 +67,33 @@ The skill is a single markdown file with no vendor-specific code, no API calls, 
 tool definitions. All of its state lives in your project (`LEARNING.md`, `TODO(you)`
 markers in your source), not in any agent's proprietary memory — so it ports.
 
-| Agent | How |
-|---|---|
-| Claude Code | `~/.claude/skills/youwrite/SKILL.md` (auto-triggers from the description) |
-| Codex CLI | copy the body to `~/.codex/prompts/youwrite.md` |
-| Gemini CLI | TOML file in `~/.gemini/commands/`, body in the `prompt` field |
-| Cursor | a rule file in `.cursor/rules/` |
+`SKILL.md` is an open standard, and most agents now read it natively — no conversion, no
+adapter, same file. Drop this folder into the right directory:
 
-Two caveats when porting. The stop-and-wait discipline runs against every coding agent's
+| Agent | Global path | Project path |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| OpenAI Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` or `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` or `.agents/skills/` |
+| Cline | `~/.cline/skills/` | `.cline/skills/` |
+
+For the long tail of other agents, the Vercel installer handles placement:
+
+```bash
+npx skills add GattiMh/youwrite-skill
+```
+
+This skill uses only `name` and `description` in its frontmatter — no `allowed-tools`,
+no vendor-specific fields — which is what keeps it portable. Optional fields are where
+cross-agent support actually fragments.
+
+Two behavioral caveats. The stop-and-wait discipline runs against every coding agent's
 bias toward finishing the task, and agentic IDEs are the most likely to "helpfully" fill
-in your `TODO(you)` — you may need to make the hard-stops section more emphatic per
-agent. And auto-triggering from the `description` field is Claude Code specific;
-elsewhere you get explicit `/youwrite` invocation only, which is arguably better for a
-mode this different from normal operation.
+in your `TODO(you)` — you may need to make the hard-stops section more emphatic for some
+agents. And auto-activation from the `description` field is strongest in Claude Code;
+elsewhere you may get explicit `/youwrite` invocation only, which is arguably better for
+a mode this different from normal operation.
 
 ## The trade-off
 
