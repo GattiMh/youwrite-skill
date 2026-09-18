@@ -86,6 +86,12 @@ mode this different from normal operation.
 This is slower than letting the agent write everything. Deliberately. It is not for
 every task — it is for the code you want to still understand in six months.
 
+## Colophon
+
+The skill file was drafted with Claude and refined in use. Which is either ironic or
+exactly the point, depending on how you look at it — the thing it protects against is
+not *using* AI, it is ending up with code you never understood.
+
 ## License
 
 MIT
