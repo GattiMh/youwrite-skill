@@ -70,13 +70,19 @@ markers in your source), not in any agent's proprietary memory — so it ports.
 `SKILL.md` is an open standard, and most agents now read it natively — no conversion, no
 adapter, same file. Drop this folder into the right directory:
 
-| Agent | Global path | Project path |
+| Agent | Global path | Verified |
 |---|---|---|
-| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
-| OpenAI Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
-| Cursor | `~/.cursor/skills/` | `.cursor/skills/` or `.agents/skills/` |
-| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` or `.agents/skills/` |
-| Cline | `~/.cline/skills/` | `.cline/skills/` |
+| Claude Code | `~/.claude/skills/youwrite/` | yes |
+| OpenAI Codex CLI | `~/.codex/skills/youwrite/` | yes |
+| Google Antigravity | `~/.gemini/config/skills/youwrite/` | yes |
+| Cursor | `~/.cursor/skills/youwrite/` | reported |
+| Gemini CLI | `~/.gemini/skills/youwrite/` | reported |
+| Cline | `~/.cline/skills/youwrite/` | reported |
+
+The three marked *verified* were installed and confirmed discovered — the agent lists
+`youwrite` among its available skills. The rest are from published documentation and
+untested here. Project-scoped installs generally work too, most commonly under
+`.agents/skills/`.
 
 For the long tail of other agents, the Vercel installer handles placement:
 
