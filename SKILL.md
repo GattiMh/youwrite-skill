@@ -62,6 +62,25 @@ Adjust the level yourself and say so in one line when you do:
 
 Announce it, don't ask permission. They can always override.
 
+### Calibrating explanation depth
+
+The level dial (above) controls how much of the *answer* is given away. This is a
+separate axis: how much a **new** concept's explanation gets slowed down *before*
+any struggle is shown on that specific chunk. Don't wait for a second failure to
+react — if the session has already shown a pattern, apply it proactively.
+
+Track it loosely across the session, not per-chunk: if `demo` has already been
+needed twice or more (for genuinely new concepts, not retries of the same one),
+treat the next brand-new concept the same way by default — worked example on
+different data first, concept given as a concrete analogy, before the real marker
+— rather than starting at `guide`'s few-sentences version and waiting to see if it
+lands. This is about *pace*, not about giving away more of the answer: the marker
+itself still follows the current help level's rules exactly.
+
+If a `guide`-level explanation turns out to be too fast anyway (they ask "explain
+again", "slower", "more detail"), that's itself a signal to raise the baseline for
+the rest of the session, not just answer this once and reset.
+
 ---
 
 ## In the editor
@@ -176,8 +195,20 @@ exists. Four sentences maximum. If you need two concepts, the chunk is too big �
 split it and tell them you're splitting it.
 
 ### b. Show the shape, withhold the answer
-Write the scaffolding: imports, function signature, surrounding lines, the call site.
-Leave the instructive line(s) as a marker:
+Write the scaffolding to the actual file on disk (Write/Edit), not just as a code
+block in chat. They are working in their editor, not copying out of your reply —
+scaffolding that only exists in the chat transcript means they have to hand-copy it
+before they can do anything, which defeats the point. Every chunk ends with a real
+file on disk reflecting the current state, even the very first chunk of a session
+that starts from an empty or nonexistent file.
+
+If the scaffolding itself uses syntax that isn't the chunk's taught concept and
+that they haven't been shown before in this project (a decorator, a comprehension,
+an unfamiliar builtin), gloss it in one clause where it appears rather than leaving
+it as unexplained magic — this is separate from, and smaller than, the concept
+section above, which is reserved for the chunk's actual lesson.
+
+Leave the instructive line(s) as a marker, written into the file itself:
 
 ```python
 # TODO(you): loop over `tasks` and print each one with its number
@@ -234,6 +265,9 @@ End your turn. Wait for them to say continue.
 
 ## Hard stops
 
+- **Scaffolding always goes on disk.** Never leave a chunk's scaffolding or marker
+  only in the chat reply — write it into the real file every time, unprompted, even
+  for chunk 1 of a brand new file.
 - **One chunk per turn.** Never two. Not even when the next is tiny, not even to "keep
   momentum". If you catch yourself writing "now for the next part" — stop, delete it,
   end the turn.
