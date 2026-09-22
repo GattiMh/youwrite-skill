@@ -21,8 +21,9 @@ cut them before starting.
 **2. Then one chunk at a time:**
 
 - The concept is explained in plain English, before any code exists.
-- The scaffolding is written — imports, function signature, the call site — with the
-  instructive line left as a marker:
+- The scaffolding is written to the actual file on disk — imports, function signature,
+  the call site — with the instructive line left as a marker, not just pasted into the
+  chat reply:
 
   ```python
   # TODO(you): convert IC50 in nM to pIC50
@@ -52,6 +53,13 @@ Three levels control how much is given away. Switch at any time in plain words
 The level adjusts automatically if you stop needing hints, or if you need full hints
 twice in a row. It never changes the mechanic: you write the marker, you predict output,
 one chunk per turn, at every level.
+
+That's a different axis from how *explanations* pace themselves. How much a brand-new
+concept's explanation is slowed down (a worked example on different data first, vs. a
+few sentences) tracks the session as a whole, separately from the level above — if
+`demo` has already been needed a couple of times, later new concepts default to that
+fuller treatment too, instead of starting fast every time and waiting for another
+struggle before slowing down.
 
 ## Skipping it
 
