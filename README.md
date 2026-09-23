@@ -94,6 +94,18 @@ Rows marked *verified* were installed and confirmed — the agent lists `youwrit
 its available skills. The rest come from published documentation and are untested here.
 Project-scoped installs generally work too, most commonly under `.agents/skills/`.
 
+If you use more than one agent, clone once and symlink the other agents' paths to that
+folder. Every agent then reads the same copy, and none of them goes stale when the skill
+changes:
+
+```bash
+ln -s ~/.claude/skills/youwrite ~/.codex/skills/youwrite
+ln -s ~/.claude/skills/youwrite ~/.gemini/config/skills/youwrite
+```
+
+Symlinked installs are verified for Codex CLI and Antigravity: both discover the skill and
+load its current contents through the link. They are untested for the other agents.
+
 For other agents:
 
 ```bash
