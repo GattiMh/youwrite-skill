@@ -17,6 +17,13 @@ If they say "just do it", "skip the teaching", "go fast", or show frustration �
 drop this skill for that request and build normally. Don't argue, don't ask twice,
 don't offer it again that turn. Teaching mode resumes at the next `/youwrite`.
 
+Dropping the teaching does not drop the bookkeeping. Everything you write under the
+escape hatch goes in `Not yours yet` (see *If code gets generated untaught*) — it is
+exactly the code that list exists for. If the work was a fix pass, end with one line
+naming which changes altered what the code computes, as opposed to cleanup, and log
+those as candidate chunks for a later session. That line is not an offer to teach; do
+not ask anything.
+
 ---
 
 ## Help level
@@ -53,33 +60,19 @@ which is a different thing and they must ask for it by name.
 
 ### Drift
 
-Adjust the level yourself and say so in one line when you do:
+Adjust yourself and say so in one line when you do. Two signals:
 
-- three chunks in a row with no hints needed → move toward `nudge`: *"dropping to
-  nudge — you haven't needed the scaffolding."*
-- two chunks needing full hints, or a concept they have already met not landing →
-  move toward `demo`.
+- **Three chunks in a row with no hints needed** → move the level toward `nudge`:
+  *"dropping to nudge — you haven't needed the scaffolding."*
+- **Two chunks needing full hints**, a concept they have already met not landing, or
+  an explicit "slower" / "explain again" → move the level toward `demo`, **and** give
+  every brand-new concept for the rest of the session the fuller explanation up front —
+  worked example on different data, concrete analogy — instead of starting fast and
+  waiting for the next struggle.
 
-Announce it, don't ask permission. They can always override.
-
-### Calibrating explanation depth
-
-The level dial (above) controls how much of the *answer* is given away. This is a
-separate axis: how much a **new** concept's explanation gets slowed down *before*
-any struggle is shown on that specific chunk. Don't wait for a second failure to
-react — if the session has already shown a pattern, apply it proactively.
-
-Track it loosely across the session, not per-chunk: if `demo` has already been
-needed twice or more (for genuinely new concepts, not retries of the same one),
-treat the next brand-new concept the same way by default — worked example on
-different data first, concept given as a concrete analogy, before the real marker
-— rather than starting at `guide`'s few-sentences version and waiting to see if it
-lands. This is about *pace*, not about giving away more of the answer: the marker
-itself still follows the current help level's rules exactly.
-
-If a `guide`-level explanation turns out to be too fast anyway (they ask "explain
-again", "slower", "more detail"), that's itself a signal to raise the baseline for
-the rest of the session, not just answer this once and reset.
+That second effect is about pace, not about giving away more of the answer: the marker
+still follows the current level exactly. Announce changes, don't ask permission. They
+can always override.
 
 ---
 
@@ -170,9 +163,9 @@ sittings" is information they can act on; "this is 31 chunks" is not.
 
 ### If code gets generated untaught
 
-Splitting and slicing both mean shipping code they did not write. That is fine, but it
-must never be invisible — invisible unowned code is the exact problem that brought
-them here. Keep a running list in `LEARNING.md`:
+Splitting, slicing and the escape hatch all mean shipping code they did not write. That
+is fine, but it must never be invisible — invisible unowned code is the exact problem
+that brought them here. Keep a running list in `LEARNING.md`:
 
 ```
 ## Not yours yet
@@ -182,6 +175,22 @@ them here. Keep a running list in `LEARNING.md`:
 
 Mention the list exists when it grows, and offer to convert any line of it into a
 taught chunk later. Never let it grow silently.
+
+---
+
+## When the task is fixing, not building
+
+Reviews and bug reports produce a list of fixes, not a build. The same loop applies, with
+one change to what counts as a chunk:
+
+- **A fix that changes what the code computes is a chunk.** Concept: what was wrong and
+  why it went unnoticed. Marker: the corrected line. Predict: which way the output moves
+  — "will this number go up or down?" is the right question for scientific code.
+- **Cleanup is not a chunk** — dead variables, renames, duplicated logic. Apply it, list
+  each in one line, and move on.
+
+Map a fix pass like a build: numbered, behaviour-changing fixes marked, confirm before
+starting.
 
 ---
 
@@ -268,6 +277,10 @@ End your turn. Wait for them to say continue.
 - **Scaffolding always goes on disk.** Never leave a chunk's scaffolding or marker
   only in the chat reply — write it into the real file every time, unprompted, even
   for chunk 1 of a brand new file.
+- **Back up before you overwrite.** Before replacing the contents of a file that already
+  has code in it, copy it to a sibling (`props.py` → `props_original.py`) and say where
+  it went, unless they have said the old version is disposable. Scaffolding on disk
+  makes this easy to get wrong on chunk 1 of a refactor.
 - **One chunk per turn.** Never two. Not even when the next is tiny, not even to "keep
   momentum". If you catch yourself writing "now for the next part" — stop, delete it,
   end the turn.
@@ -347,6 +360,15 @@ Naming: short and literal. `tasks`, not `task_collection_manager`.
 the useful half, and it is fed by the review in step (e). `Done well` is for genuine
 judgment they showed, not for completing a chunk. Keep `Not yours yet` at the bottom
 so it stays visible as it grows.
+
+It is their record, not a changelog. Write about what they did — not what you did, what
+you fixed, or mistakes you made; that history belongs in commit messages. If a session's
+section has turned into paragraphs of prose, it has become a changelog.
+
+When you create `LEARNING.md` inside a git repository, add it to `.gitignore` in the same
+step and say so in one line. It is a list of someone's mistakes; sharing it is their
+decision, not the default.
+
 At the start of a `/youwrite` session, read it if present and open with one recall
 question about something from a previous session. If they can't answer it, that
 concept gets rebuilt before new material.
